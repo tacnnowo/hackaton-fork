@@ -1,65 +1,90 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hackathon</title>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <div class="elements-container">
-            <div class="individual-container">
-                <img src="" alt="Mesa1">
-            </div>
+      <div class="elements-container">
+        <div class="individual-container">
+          <img src="" alt="Mesa1" />
         </div>
-    </div>
-    <div class="container">
-        <div class="elements-container">
-            <div class="individual-container">
-                <img src="assets/img/larry-1.png.png" alt="Larry">
-            </div>
-        </div>
+      </div>
     </div>
     <div class="container">
-        <div class="elements-container">
-            <div class="individual-container">
-                <img src="" alt="Mesa2">
-            </div>
+      <div class="elements-container">
+        <div class="individual-container">
+          <img src="assets/img/larry-1.png.png" alt="Larry" />
         </div>
+      </div>
     </div>
     <div class="container">
-        <div class="elements-container">
-            <div class="individual-container">
-                <img src="assets/img/chucky.jpg" alt="Chucky">
-            </div>
+      <div class="elements-container">
+        <div class="individual-container">
+          <img src="" alt="Mesa2" />
         </div>
-    </div>
-     <div class="container">
-        <div class="elements-container">
-            <div class="individual-container">
-                <img src="" alt="Mesa3">
-            </div>
-        </div>
+      </div>
     </div>
     <div class="container">
-        <div class="elements-container">
-            <div class="individual-container">
-                <img src="assets/img/rigby cat.webp" alt="Rigby">
-            </div>
+      <div class="elements-container">
+        <div class="individual-container">
+          <img src="assets/img/chucky.jpg" alt="Chucky" />
         </div>
+      </div>
     </div>
-    <style>
-        body {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            padding: 20px;
-        }
+    <div class="container">
+      <div class="elements-container">
+        <div class="individual-container">
+          <img src="" alt="Mesa3" />
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="elements-container">
+        <div class="individual-container">
+          <img src="assets/img/rigby cat.webp" alt="Rigby" />
+        </div>
+      </div>
+    </div>
+    <div class="individual-container">
+      <img src="assets/img/larry-1.png" alt="Larry" class="character" />
+      <img src="path/to/mesa1.png" alt="Mesa1" class="overlay" />
+    </div>
 
-        .individual-container img {
-            width: 100%;
-            display: block;
-        }
+    <style>
+      body {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        padding: 20px;
+      }
+
+      .individual-container img {
+        width: 100%;
+        display: block;
+      }
+
+      .individual-container {
+        position: relative;
+        width: 300px; /* or whatever size */
+      }
+
+      .individual-container .character {
+        display: block;
+        width: 100%;
+        z-index: 1;
+      }
+
+      .individual-container .mesa {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 2;
+        pointer-events: none; /* optional */
+      }
     </style>
-</body>
+  </body>
 </html>
