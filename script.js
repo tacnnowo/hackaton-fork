@@ -1,47 +1,92 @@
 const cases = [
   {
-    question: "Alguém clicou em um link suspeito enviado por e-mail.",
+    question: "Eu cliquei em um link suspeito enviado por e-mail. O que faço?",
     chuck: "Eu clico em qualquer link que recebo.",
     rigby: "Eu verifico o remetente antes de clicar.",
     education: {
-      chuck: "Correto. Chuck foi culpado porque clicar em links suspeitos pode instalar vírus e roubar dados.",
-      rigby: "Errado. Rigby foi cuidadoso. Sempre verifique o remetente antes de clicar em links.",
+      chuck: "Correto. Eu fui culpado porque clicar em links suspeitos pode instalar vírus e roubar dados.",
+      rigby: "Errado. Eu fui cuidadoso. Sempre verifico o remetente antes de clicar em links.",
     },
   },
   {
-    question: "Um colega pediu a sua senha para ajudar a mexer no computador.",
+    question: "Um colega pediu minha senha para ajudar a mexer no computador. Devo passar?",
     chuck: "Claro, eu passo minha senha e depois altero tudo.",
     rigby: "Senhas são pessoais e não devem ser compartilhadas.",
     education: {
-      chuck: "Correto. Compartilhar senhas abre caminho para invasão de contas e perda de privacidade.",
-      rigby: "Errado. Rigby fez a escolha certa ao manter a senha privada.",
+      chuck: "Correto. Eu fui culpado. Compartilhar senhas abre caminho para invasão de contas e perda de privacidade.",
+      rigby: "Errado. Eu fiz a escolha certa ao manter minha senha privada.",
     },
   },
   {
-    question: "Alguém postou endereço e telefone em um perfil público.",
+    question: "Eu postei meu endereço e telefone em um perfil público. Isso é seguro?",
     chuck: "Eu não publico nada pessoal no meu perfil.",
     rigby: "Posto meu endereço e telefone para todo mundo ver.",
     education: {
-      chuck: "Errado. Chuck foi cauteloso. Expor dados pessoais em público é perigoso.",
-      rigby: "Correto. Rigby foi culpado por compartilhar informações que podem ser usadas para golpes.",
+      chuck: "Errado. Eu fui cauteloso. Expor dados pessoais em público é perigoso.",
+      rigby: "Correto. Eu fui culpado por compartilhar informações que podem ser usadas para golpes.",
     },
   },
   {
-    question: "Uma notícia duvidosa começou a circular no grupo escolar.",
+    question: "Recebi uma notícia duvidosa no grupo escolar. Devo compartilhar?",
     chuck: "Repito para todo mundo antes de verificar se é verdade.",
     rigby: "Eu busco a fonte antes de compartilhar qualquer notícia.",
     education: {
-      chuck: "Correto. Compartilhar fake news prejudica outras pessoas e espalha desinformação.",
-      rigby: "Errado. Rigby fez a escolha segura ao checar a informação primeiro.",
+      chuck: "Correto. Eu fui culpado. Compartilhar fake news prejudica outras pessoas e espalha desinformação.",
+      rigby: "Errado. Eu fiz a escolha segura ao checar a informação primeiro.",
     },
   },
   {
-    question: "Alguém mandou mensagens agressivas para um colega online.",
+    question: "Eu mandei mensagens agressivas para um colega online. Isso está certo?",
     chuck: "Não é legal. Eu tento ajudar e pedir respeito.",
     rigby: "Eu xingo quando fico irritado e mando mensagens fortes.",
     education: {
-      chuck: "Errado. Chuck mostrou comportamento respeitoso online.",
-      rigby: "Correto. Rigby foi culpado por cyberbullying, e isso afeta outras pessoas.",
+      chuck: "Errado. Eu mostrei comportamento respeitoso online.",
+      rigby: "Correto. Eu fui culpado por cyberbullying, e isso afeta outras pessoas.",
+    },
+  },
+  {
+    question: "Estou em um site não tão confiável que começa a pedir minhas informações pessoais. O que eu faço?",
+    chuck: "Passo minhas informações, já que a vida é curta.",
+    rigby: "Não é confiável passar informações pessoais sem ser sites de banco ou serviços seguros.",
+    education: {
+      chuck: "Correto. Eu fui culpado por confiar em sites inseguros e expor meus dados pessoais.",
+      rigby: "Errado. Eu fiz a escolha certa ao proteger minhas informações e usar apenas sites confiáveis.",
+    },
+  },
+  {
+    question: "No tribunal, eu uso a mesma senha em vários sites. Isso é seguro?",
+    chuck: "Uso a mesma senha em todos, assim é mais fácil lembrar.",
+    rigby: "Cada conta precisa de uma senha forte e única.",
+    education: {
+      chuck: "Correto. Eu fui culpado porque repetir senhas em vários sites aumenta o risco de invasão.",
+      rigby: "Errado. Eu escolhi a opção segura e protejo melhor minhas contas.",
+    },
+  },
+  {
+    question: "No tribunal, eu respondo uma pesquisa online pedindo meus dados pessoais. Isso é certo?",
+    chuck: "Respondo tudo, quanto mais, melhor.",
+    rigby: "Não compartilho meus dados pessoais em pesquisas duvidosas.",
+    education: {
+      chuck: "Correto. Eu fui culpado por entregar meus dados a fontes não confiáveis.",
+      rigby: "Errado. Eu agi certo ao manter minha privacidade em pesquisas suspeitas.",
+    },
+  },
+  {
+    question: "No tribunal, eu uso Wi-Fi público sem proteção. Isso é inteligente?",
+    chuck: "Conecto direto, não tenho segredo nenhum.",
+    rigby: "Uso VPN ou espero por uma rede segura.",
+    education: {
+      chuck: "Correto. Eu fui culpado por arriscar meus dados em uma rede pública insegura.",
+      rigby: "Errado. Eu estava certo ao proteger a conexão com VPN ou usar uma rede confiável.",
+    },
+  },
+  {
+    question: "No tribunal, eu guardo documentos importantes no celular sem bloqueio. Isso é seguro?",
+    chuck: "Sem problema, é só para mim.",
+    rigby: "Melhor manter documentos seguros e com proteção.",
+    education: {
+      chuck: "Correto. Eu fui culpado por não proteger informações sensíveis no dispositivo.",
+      rigby: "Errado. Eu tomei a atitude correta ao proteger meus documentos pessoais.",
     },
   },
 ];
