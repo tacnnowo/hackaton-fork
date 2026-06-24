@@ -180,6 +180,30 @@ function disableVotes(disabled) {
   voteRigbyButton.style.opacity = disabled ? "0.6" : "1";
 }
 
+function startIntro() {
+  updateProgress();
+  hideVoting();
+  resultPanel.classList.remove("visible");
+  hideAllBubbles();
+  clearCharacterHighlight();
+
+  const firstIntro =
+    "Ultimamente anda acontecendo crimes online envolvendo: roubo de dados, phishing e fraude digital.";
+  const secondIntro =
+    "Trouxemos aqui dois suspeitos desses crimes cruéis, irei fazer perguntas sobre segurança digital e vocês terão que responder corretamente, se errarem um de vocês é o culpado.";
+
+  showJudge(firstIntro);
+  setActiveCharacter("judge");
+
+  voteTimeout = setTimeout(() => {
+    showJudge(secondIntro);
+
+    voteTimeout = setTimeout(() => {
+      startCase();
+    }, 15000);
+  }, 15000);
+}
+
 function startCase() {
   updateProgress();
   hideVoting();
@@ -250,5 +274,5 @@ voteChuckButton.addEventListener("click", () => registerVote("chuck"));
 voteRigbyButton.addEventListener("click", () => registerVote("rigby"));
 
 window.addEventListener("load", () => {
-  startCase();
+  startIntro();
 });
