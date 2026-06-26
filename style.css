@@ -25,7 +25,7 @@ body {
   gap: 20px;
   margin-bottom: 24px;
   padding: 16px 22px;
-  background: transparent;
+  background: black;
   border: none;
   border-radius: 0;
 } */
@@ -38,7 +38,7 @@ body {
   position: fixed;
   bottom: 16px;
   right: 16px;
-  background: transparent;
+  background: black;
   z-index: 999;
 }
 
@@ -66,16 +66,16 @@ body {
 }
 
 .scene-object.temmie-0 {
-  left: 4%;
-  bottom: 0;
+  left: 32%;
+  bottom: 50%;
   width: 96px;
 }
 
 .scene-object.escadinha {
-  right: 8%;
-  bottom: 10px;
-  width: 120px;
-  transform: rotate(-4deg);
+  right: 23%;
+  bottom: 32%;
+  width: 180px;
+  z-index: 0;
 }
 
 .papel-juiz {
@@ -108,7 +108,7 @@ body {
   width: 100%;
   padding: 18px 20px;
   border:#ffffff  5px solid;
-  background: transparent;
+  background: black;
   color: #901414;
   font-size: 18px;
   pointer-events: none;
@@ -133,11 +133,11 @@ body {
 }
 
 .bubble-left {
-  background: transparent;
+  background: black;
 }
 
 .bubble-right {
-  background: transparent;
+  background: black;
 }
 
 .bubble-content {
@@ -238,7 +238,7 @@ body {
     max-width: 1000px;
     justify-content: center;
     padding: 18px 22px;
-    background: transparent;
+    background: black;
     border-radius: 18px;
     /* box-shadow: none; */
     z-index: 3;

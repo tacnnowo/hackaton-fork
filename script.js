@@ -114,63 +114,16 @@ const decisionPanel = document.getElementById("decision-panel");
 const resultPanel = document.getElementById("result-panel");
 const screenOverlay = document.getElementById("screen-overlay");
 const finalScene = document.getElementById("final-scene");
-const voteGubbyButton = document.getElementById("vote-gubby");
+const votegubbyButton = document.getElementById("vote-gubby");
 const voteRigbyButton = document.getElementById("vote-rigby");
 
 let currentCase = 0;
-let pontosGubby = 0;
+let pontosgubby = 0;
 let pontosRigby = 0;
 let voteTimeout = null;
-let _typingIdCounter = 0;
-// velocidade padrão (ms por caractere). Valor inicial mais rápido.
-let TYPING_SPEED = 30;
-
-// permite ajustar em tempo de execução: window.setTypingSpeed(120)
-function setTypingSpeed(ms) {
-  TYPING_SPEED = Math.max(10, Number(ms) || 30);
-}
-window.setTypingSpeed = setTypingSpeed;
 
 function hideAllBubbles() {
-  // cancel any typing in progress and hide bubbles
-  cancelTyping();
   Object.values(bubbles).forEach((bubble) => bubble.classList.remove("active"));
-}
-
-function cancelTyping() {
-  _typingIdCounter++;
-}
-
-function typeText(el, text, speed = TYPING_SPEED) {
-  _typingIdCounter++;
-  const myId = String(_typingIdCounter);
-  el.dataset.typingId = myId;
-  el.textContent = "";
-  el.classList.add("typing");
-
-  return new Promise((resolve) => {
-    let i = 0;
-    function step() {
-      // if another typing started, abort
-      if (el.dataset.typingId !== myId) {
-        el.classList.remove("typing");
-        return resolve("canceled");
-      }
-
-      if (i <= text.length) {
-        el.textContent = text.slice(0, i);
-        i++;
-        // small randomization makes the typing feel more natural
-        const delay = speed + Math.floor(Math.random() * 40);
-        setTimeout(step, delay);
-      } else {
-        el.classList.remove("typing");
-        return resolve();
-      }
-    }
-
-    step();
-  });
 }
 
 function clearCharacterHighlight() {
@@ -198,19 +151,19 @@ function updateProgress() {
 
 function showJudge(message) {
   hideAllBubbles();
+  texts.judge.innerText = message;
   bubbles.judge.classList.add("active");
   setActiveCharacter("judge");
-  typeText(texts.judge, message, TYPING_SPEED);
 }
 
-function showGubby(message) {
+function showgubby(message) {
+  texts.gubby.innerText = message;
   bubbles.gubby.classList.add("active");
-  typeText(texts.gubby, message, TYPING_SPEED);
 }
 
 function showRigby(message) {
+  texts.rigby.innerText = message;
   bubbles.rigby.classList.add("active");
-  typeText(texts.rigby, message, TYPING_SPEED);
 }
 
 function showVoting() {
@@ -223,9 +176,9 @@ function hideVoting() {
 }
 
 function disableVotes(disabled) {
-  voteGubbyButton.disabled = disabled;
+  votegubbyButton.disabled = disabled;
   voteRigbyButton.disabled = disabled;
-  voteGubbyButton.style.opacity = disabled ? "0.6" : "1";
+  votegubbyButton.style.opacity = disabled ? "0.6" : "1";
   voteRigbyButton.style.opacity = disabled ? "0.6" : "1";
 }
 
@@ -237,9 +190,9 @@ function startIntro() {
   clearCharacterHighlight();
 
   const firstIntro =
-    "Ultimamente andam acontecendo crimes online envolvendo: roubo de dados, phishing e fraude digital.";
+    "Ultimamente anda acontecendo crimes online envolvendo: roubo de dados, phishing e fraude digital.";
   const secondIntro =
-    "Trouxemos aqui dois suspeitos desses crimes cruéis, irei fazer perguntas sobre segurança digital e vocês terão que responder corretamente, se errarem um de vocês será o culpado.";
+    "Trouxemos aqui dois suspeitos desses crimes cruéis, irei fazer perguntas sobre segurança digital e vocês terão que responder corretamente, se errarem um de vocês é o culpado.";
 
   showJudge(firstIntro);
   setActiveCharacter("judge");
@@ -265,7 +218,7 @@ function startCase() {
 
   voteTimeout = setTimeout(() => {
     hideAllBubbles();
-    showGubby(activeCase.gubby);
+    showgubby(activeCase.gubby);
     showRigby(activeCase.rigby);
     setActiveCharacter("both");
     showVoting();
@@ -273,7 +226,7 @@ function startCase() {
 }
 
 function registerVote(guilty) {
-  if (voteGubbyButton.disabled || voteRigbyButton.disabled) {
+  if (votegubbyButton.disabled || voteRigbyButton.disabled) {
     return;
   }
 
@@ -284,7 +237,7 @@ function registerVote(guilty) {
   const activeCase = cases[currentCase];
 
   if (guilty === "gubby") {
-    pontosGubby += 1;
+    pontosgubby += 1;
   } else {
     pontosRigby += 1;
   }
@@ -310,9 +263,9 @@ function showFinalResult() {
 
   let finalMessage = "";
 
-  if (pontosGubby > pontosRigby) {
+  if (pontosgubby > pontosRigby) {
     finalMessage =
-      "Após analisar todas as evidências, Gubby foi considerado culpado por colocar a segurança digital em risco.";
+      "Após analisar todas as evidências, gubby foi considerado culpado por colocar a segurança digital em risco.";
   } else {
     finalMessage =
       "Após analisar todas as evidências, Rigby foi considerado culpado por colocar a segurança digital em risco.";
@@ -327,7 +280,7 @@ function showFinalResult() {
   }, 500);
 }
 
-voteGubbyButton.addEventListener("click", () => registerVote("gubby"));
+votegubbyButton.addEventListener("click", () => registerVote("gubby"));
 voteRigbyButton.addEventListener("click", () => registerVote("rigby"));
 
 window.addEventListener("load", () => {
