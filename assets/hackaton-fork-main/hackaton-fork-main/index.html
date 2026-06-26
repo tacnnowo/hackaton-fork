@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tribunal Hackathon</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <script src="script.js" defer></script>
+
+  <div class="status-bar">
+    <div class="progress" id="progress-text">Caso 1 de 5</div>
+    <div class="instructions">Leia as respostas e escolha quem colocou a segurança digital em risco.</div>
+  </div>
+
+  <div class="container">
+    <div class="station papel-juiz">
+      <div class="bubble bubble-judge" id="bubble-judge">
+        <div class="bubble-name">Larry</div>
+        <div class="bubble-content" id="text-judge"></div>
+      </div>
+      <img class="character" id="character-judge" src="assets/img/larry-1.png.png" alt="Juiz Larry" />
+      <img class="mesa-larry" src="./assets/img/mesajudge.png" alt="Mesa do Juiz" />
+    </div>
+
+    <div class="station papel-acusacao">
+      <div class="bubble bubble-left" id="bubble-left">
+        <div class="bubble-name">Rigby</div>
+        <div class="bubble-content" id="text-left"></div>
+      </div>
+      <img class="character" id="character-rigby" src="./assets/img/rigby.png" alt="Rigby" />
+      <img class="mesa-rigby" src="./assets/img/mesa_do_chuck.png" alt="Mesa do Rigby" />
+    </div>
+
+    <div class="station papel-defesa">
+      <div class="bubble bubble-right" id="bubble-right">
+        <div class="bubble-name">Gubby</div>
+        <div class="bubble-content" id="text-right"></div>
+      </div>
+      <img class="character" id="character-gubby" src="./assets/img/gubby.png" alt="Gubby" />
+      <img class="mesa-gubby" src="./assets/img/mesa_do_rigby.png" alt="Mesa do Gubby" />
+    </div>
+
+    <img class="scene-object temmie-0" src="assets/img/Temmie-0.webp" alt="Temmie 0" />
+    <img class="scene-object escadinha" src="assets/img/escadinha (1).png" alt="Escadinha" />
+  </div>
+
+  <div class="decision-panel" id="decision-panel">
+    <button type="button" id="vote-rigby">rigby é culpado</button>
+    <button type="button" id="vote-gubby">Gubby é culpado</button>
+  </div>
+
+  <div class="result-panel" id="result-panel"></div>
+
+  <div class="screen-overlay" id="screen-overlay">
+    <div class="final-scene" id="final-scene">
+      <h1>Fim da cena</h1>
+      <p>Obrigado por participar do julgamento.</p>
+    </div>
+  </div>
+</body>
+</html>
