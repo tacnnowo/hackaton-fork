@@ -67,8 +67,39 @@ body {
 
 .scene-object.temmie-0 {
   left: 32%;
-  bottom: 50%;
+  bottom: 45%;
   width: 96px;
+  z-index: 1;
+  animation: temmie-jump 0.5s ease-in-out infinite;
+}
+
+/* brilho/dim para Temmie quando fala ou não */
+.scene-object.temmie-0 {
+  filter: brightness(0.6);
+  transition: filter 0.25s ease;
+}
+
+.scene-object.temmie-0.active {
+  filter: brightness(1.15);
+}
+
+@keyframes temmie-jump {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  20%, 60% {
+    transform: translateY(-18px);
+  }
+  40%, 80% {
+    transform: translateY(-8px);
+  }
+}
+
+.scene-object.cadeira {
+  left: 30%;
+  bottom: 32%;
+  width: 160px;
+  z-index: 0;
 }
 
 .scene-object.escadinha {
@@ -126,24 +157,51 @@ body {
 }
 
 .bubble-judge {
-  top: 200px;
+  top: 350px;
   z-index: 3;
   background: black;
   border: white 5px solid;
 }
 
 .bubble-left {
+  top: -200px;
   background: black;
 }
 
 .bubble-right {
+  top: -200px;
   background: black;
+}
+
+.bubble-temmie {
+  position: absolute;
+  top: -90px;
+  left: 27%;
+  width: 170px;
+  padding: 16px 18px;
+  border: #ffffff 5px solid;
+  background: black;
+  color: #ffffff;
+  z-index: 12;
+}
+
+.bubble-temmie .bubble-name {
+  color: #ffffff;
 }
 
 .bubble-content {
   white-space: pre-line;
   line-height: 1.5;
   color: #ffffff;
+}
+
+/* Quando a mensagem da Temmie for longa, mostrar o balão retangular deitado (mais largo)
+   A classe `temmie-wide` é adicionada dinamicamente por `script.js`. */
+.bubble-temmie.temmie-wide {
+  width: 360px;
+  left: 14%;
+  top: -80px;
+  padding: 14px 20px;
 }
 
 /* Efeito de cursor durante a digitação */
