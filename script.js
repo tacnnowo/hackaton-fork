@@ -156,7 +156,7 @@ function setActiveCharacter(role) {
 }
 
 function updateProgress() {
-  progressText.innerText = `Caso ${currentCase + 1} de ${cases.length}`;
+  progressText.innerText = `${currentCase + 1} de ${cases.length}`;
 }
 
 function showJudge(message) {
