@@ -11,8 +11,15 @@
 <body>
   <script src="script.js" defer></script>
 
+  <div class="start-screen" id="start-screen">
+    <div class="start-content">
+      <p class="start-date">03/07 10:99 A.M</p>
+      <p class="start-title">-Tribunal-</p>
+    </div>
+  </div>
+
   <div class="status-bar">
-    <div class="progress" id="progress-text">Caso 1 de 5</div>
+    <div class="progress" id="progress-text">Caso 1 de 10</div>
   </div>
 
   <div class="container">
@@ -52,6 +59,10 @@
     <img class="scene-object cadeira"   src="assets/img/cadeira_temmie.png" alt="cadeira" />
   </div>
 
+  <div class="dialog-controls" id="dialog-controls">
+    <button type="button" id="next-dialogue">Ir para o próximo</button>
+  </div>
+
   <div class="decision-panel" id="decision-panel">
     <button type="button" id="vote-rigby">rigby é culpado</button>
     <button type="button" id="vote-gubby">Gubby é culpado</button>
@@ -62,7 +73,7 @@
   <div class="screen-overlay" id="screen-overlay">
     <div class="final-scene" id="final-scene">
       <h1>Fim da cena</h1>
-      <p>Obrigado por participar do julgamento.</p>
+      <!-- <p>Obrigado por participar do julgamento.</p> -->
     </div>
   </div>
 </body>

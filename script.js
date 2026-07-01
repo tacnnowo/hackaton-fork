@@ -49,8 +49,8 @@ const cases = [
     gubby: "Não é confiável passar informações pessoais sem ser sites de banco ou serviços seguros.",
     rigby: "Passo minhas informações, já que a vida é curta.",
     education: {
-      gubby: "Errado. Eu fiz a escolha certa ao proteger minhas informações e usar apenas sites confiáveis.",
-      rigby: "Correto. Eu fui culpado por confiar em sites inseguros e expor meus dados pessoais.",
+      gubby: "RIGBY INOCENTE. Eu fiz a escolha certa ao proteger minhas informações e usar apenas sites confiáveis.",
+      rigby: "GUBBY INOCENTE. Eu fui culpado por confiar em sites inseguros e expor meus dados pessoais.",
     },
   },
   {
@@ -58,8 +58,8 @@ const cases = [
     gubby: "Cada conta precisa de uma senha forte e única.",
     rigby: "Uso a mesma senha em todos, assim é mais fácil lembrar.",
     education: {
-      gubby: "Errado. Eu escolhi a opção segura e protejo melhor minhas contas.",
-      rigby: "Correto. Eu fui culpado porque repetir senhas em vários sites aumenta o risco de invasão.",
+      gubby: "RIGBY INOCENTE. Eu escolhi a opção segura e protejo melhor minhas contas.",
+      rigby: "GUBBY INOCENTE. Eu fui culpado porque repetir senhas em vários sites aumenta o risco de invasão.",
     },
   },
   {
@@ -67,8 +67,8 @@ const cases = [
     gubby: "Não compartilho meus dados pessoais em pesquisas duvidosas.",
     rigby: "Respondo tudo, quanto mais, melhor.",
     education: {
-      gubby: "Errado. Eu agi certo ao manter minha privacidade em pesquisas suspeitas.",
-      rigby: "Correto. Eu fui culpado por entregar meus dados a fontes não confiáveis.",
+      gubby: "RIGBY INOCENTE. Eu agi certo ao manter minha privacidade em pesquisas suspeitas.",
+      rigby: "GUBBY INOCENTE. Eu fui culpado por entregar meus dados a fontes não confiáveis.",
     },
   },
   {
@@ -76,8 +76,8 @@ const cases = [
     gubby: "Uso VPN ou espero por uma rede segura.",
     rigby: "Conecto direto, não tenho segredo nenhum.",
     education: {
-      gubby: "Errado. Eu estava certo ao proteger a conexão com VPN ou usar uma rede confiável.",
-      rigby: "Correto. Eu fui culpado por arriscar meus dados em uma rede pública insegura.",
+      gubby: "RIGBY INOCENTE. Eu estava certo ao proteger a conexão com VPN ou usar uma rede confiável.",
+      rigby: "GUBBY INOCENTE. Eu fui culpado por arriscar meus dados em uma rede pública insegura.",
     },
   },
   {
@@ -85,8 +85,8 @@ const cases = [
     gubby: "Melhor manter documentos seguros e com proteção.",
     rigby: "Sem problema, é só para mim.",
     education: {
-      gubby: "Errado. Eu tomei a atitude correta ao proteger meus documentos pessoais.",
-      rigby: "Correto. Eu fui culpado por não proteger informações sensíveis no dispositivo.",
+      gubby: "RIGBY INOCENTE. Eu tomei a atitude correta ao proteger meus documentos pessoais.",
+      rigby: "GUBBY INOCENTE. Eu fui culpado por não proteger informações sensíveis no dispositivo.",
     },
   },
 ];
@@ -115,15 +115,20 @@ const characters = {
 const progressText = document.getElementById("progress-text");
 const decisionPanel = document.getElementById("decision-panel");
 const resultPanel = document.getElementById("result-panel");
-const screenOverlay = document.getElementById("screen-overlay");
 const finalScene = document.getElementById("final-scene");
 const votegubbyButton = document.getElementById("vote-gubby");
 const voteRigbyButton = document.getElementById("vote-rigby");
+const screenOverlay = document.getElementById("screen-overlay");
+const startScreen = document.getElementById("start-screen");
 
 let currentCase = 0;
 let pontosgubby = 0;
 let pontosRigby = 0;
-let voteTimeout = null;
+let dialogueQueue = [];
+let dialogueIndex = -1;
+let dialogueCompleteCallback = null;
+let dialogueActive = false;
+const nextDialogueButton = document.getElementById("next-dialogue");
 
 function hideAllBubbles() {
   Object.values(bubbles).forEach((bubble) => bubble.classList.remove("active"));
@@ -162,13 +167,26 @@ function showJudge(message) {
 }
 
 function showgubby(message) {
+  hideAllBubbles();
   texts.gubby.innerText = message;
   bubbles.gubby.classList.add("active");
+  setActiveCharacter("gubby");
 }
 
 function showRigby(message) {
+  hideAllBubbles();
   texts.rigby.innerText = message;
   bubbles.rigby.classList.add("active");
+  setActiveCharacter("rigby");
+}
+
+function showCaseOptions(gubbyMessage, rigbyMessage) {
+  hideAllBubbles();
+  texts.gubby.innerText = gubbyMessage;
+  texts.rigby.innerText = rigbyMessage;
+  bubbles.gubby.classList.add("active");
+  bubbles.rigby.classList.add("active");
+  setActiveCharacter("both");
 }
 
 function showTemmie(message) {
@@ -198,6 +216,115 @@ function hideVoting() {
   decisionPanel.classList.remove("active");
 }
 
+function setDialogueButtonVisible(visible) {
+  const dialogControls = document.getElementById("dialog-controls");
+
+  if (dialogControls) {
+    dialogControls.style.display = visible ? "flex" : "none";
+  }
+
+  if (nextDialogueButton) {
+    nextDialogueButton.style.display = visible ? "inline-flex" : "none";
+  }
+}
+
+function showStartScreen() {
+  if (startScreen) {
+    startScreen.style.display = "flex";
+  }
+  hideVoting();
+  setDialogueButtonVisible(false);
+}
+
+function hideStartScreen() {
+  if (startScreen) {
+    startScreen.style.display = "none";
+    startScreen.classList.remove("fade-out");
+  }
+}
+
+let startTimeout = null;
+
+function fadeOutStartScreen(callback) {
+  if (!startScreen) {
+    callback();
+    return;
+  }
+  startScreen.classList.add("fade-out");
+  const onTransitionEnd = (event) => {
+    if (event.propertyName === "opacity") {
+      startScreen.removeEventListener("transitionend", onTransitionEnd);
+      hideStartScreen();
+      callback();
+    }
+  };
+  startScreen.addEventListener("transitionend", onTransitionEnd);
+}
+
+function scheduleStart(delayedStart = 5000) {
+  if (startTimeout) {
+    clearTimeout(startTimeout);
+    startTimeout = null;
+  }
+
+  startTimeout = setTimeout(() => {
+    fadeOutStartScreen(() => {
+      startIntro();
+    });
+  }, delayedStart);
+}
+
+function displayDialogueStep(step) {
+  if (!step) return;
+
+  if (step.type === "message") {
+    const { role, message, focus } = step;
+    if (role === "judge") {
+      showJudge(message);
+    } else if (role === "gubby") {
+      showgubby(message);
+    } else if (role === "rigby") {
+      showRigby(message);
+    } else if (role === "temmie") {
+      showTemmie(message);
+    }
+
+    if (focus) {
+      setActiveCharacter(focus);
+    }
+  }
+}
+
+function startDialogueSequence(sequence, onComplete = null) {
+  disableVotes(true);
+  dialogueQueue = sequence;
+  dialogueIndex = -1;
+  dialogueCompleteCallback = onComplete;
+  dialogueActive = true;
+  setDialogueButtonVisible(true);
+  advanceDialogue();
+}
+
+function advanceDialogue() {
+  if (!dialogueActive) return;
+
+  dialogueIndex += 1;
+
+  if (dialogueIndex >= dialogueQueue.length) {
+    dialogueActive = false;
+    setDialogueButtonVisible(false);
+
+    if (dialogueCompleteCallback) {
+      const callback = dialogueCompleteCallback;
+      dialogueCompleteCallback = null;
+      callback();
+    }
+    return;
+  }
+
+  displayDialogueStep(dialogueQueue[dialogueIndex]);
+}
+
 function disableVotes(disabled) {
   votegubbyButton.disabled = disabled;
   voteRigbyButton.disabled = disabled;
@@ -206,63 +333,31 @@ function disableVotes(disabled) {
 }
 
 function playSecondQuestionInterlude() {
-  showTemmie("Senhas são lEEEegaIs, a senha do meu notebook é 1234...");
-
-  voteTimeout = setTimeout(() => {
-    showJudge("CHEGA TEMMIE! acabamos de falar que senhas são pessoais.");
-
-    voteTimeout = setTimeout(() => {
-      showTemmie("hihihi, foi só uma brincadeira, nem noteBOok eu tenho.");
-
-      voteTimeout = setTimeout(() => {
-        showJudge("enfim, terceira pergunta.");
-        setActiveCharacter("judge");
-
-        voteTimeout = setTimeout(() => {
-          currentCase += 1;
-          startCase();
-        }, 4500);
-      }, 4500);
-    }, 4500);
-  }, 4500);
+  startDialogueSequence([
+    { type: "message", role: "temmie", message: "Senhas são lEEEegaIs, a senha do meu notebook é 1234...", focus: "temmie" },
+    { type: "message", role: "judge", message: "CHEGA TEMMIE! acabamos de falar que senhas são pessoais.", focus: "judge" },
+    { type: "message", role: "temmie", message: "hihihi, foi só uma brincadeira, nem noteBOok eu tenho.", focus: "temmie" },
+    { type: "message", role: "judge", message: "enfim, terceira pergunta.", focus: "judge" },
+  ], () => {
+    currentCase += 1;
+    startCase();
+  });
 }
 
 function playThirdQuestionInterlude() {
-  showTemmie("Meu número de telefone favorito é 4002-8922");
-
-  voteTimeout = setTimeout(() => {
-    showgubby("Esse não é o número do bom dia e companhia?");
-
-    voteTimeout = setTimeout(() => {
-      showTemmie("Yaya, exatamente.");
-
-      voteTimeout = setTimeout(() => {
-        showJudge("esse tribunal está saindo do controle...");
-
-        voteTimeout = setTimeout(() => {
-          showTemmie("Fique tranquilo gatinho preto, estamos tendo uma conversa sofisticada por aqui.");
-
-          voteTimeout = setTimeout(() => {
-            showJudge("Estou perdendo minha paciência nesse tribunal, logo logo terei que mandar alguém para a cadeia se continuar assim.");
-
-            voteTimeout = setTimeout(() => {
-              showRigby("Estou ficando com medo, pórem está sendo bem interessante HAHAHA.");
-
-              voteTimeout = setTimeout(() => {
-                showJudge("Enfim, continunando.");
-                setActiveCharacter("judge");
-
-                voteTimeout = setTimeout(() => {
-                  currentCase += 1;
-                  startCase();
-                }, 4500);
-              }, 4500);
-            }, 4500);
-          }, 4500);
-        }, 4500);
-      }, 4500);
-    }, 4500);
-  }, 4500);
+  startDialogueSequence([
+    { type: "message", role: "temmie", message: "Meu número de telefone favorito é 4002-8922", focus: "temmie" },
+    { type: "message", role: "gubby", message: "Esse não é o número do bom dia e companhia?", focus: "gubby" },
+    { type: "message", role: "temmie", message: "Yaya, exatamente.", focus: "temmie" },
+    { type: "message", role: "judge", message: "esse tribunal está saindo do controle...", focus: "judge" },
+    { type: "message", role: "temmie", message: "Fique tranquilo gatinho preto, estamos tendo uma conversa sofisticada por aqui.", focus: "temmie" },
+    { type: "message", role: "judge", message: "Estou perdendo minha paciência nesse tribunal, logo logo terei que mandar alguém para a cadeia se continuar assim.", focus: "judge" },
+    { type: "message", role: "rigby", message: "Estou ficando com medo, pórem está sendo bem interessante HAHAHA.", focus: "rigby" },
+    { type: "message", role: "judge", message: "Enfim, continunando.", focus: "judge" },
+  ], () => {
+    currentCase += 1;
+    startCase();
+  });
 }
 
 function startIntro() {
@@ -277,51 +372,22 @@ function startIntro() {
   const secondIntro =
     "Trouxemos aqui dois suspeitos desses crimes cruéis, irei fazer perguntas sobre segurança digital e vocês terão que responder corretamente, se errarem, um de vocês será o culpado.";
 
-  showJudge(firstIntro);
-
-  voteTimeout = setTimeout(() => {
-    showJudge("Junto conosco, uma testemunha que disse que viu um de vocês agindo no crime.");
-
-    voteTimeout = setTimeout(() => {
-      showJudge("Esta é Temmie.");
-
-      voteTimeout = setTimeout(() => {
-        showTemmie("Hoiii :3");
-
-        voteTimeout = setTimeout(() => {
-          showTemmie("uma perguntinha, eu sou a testemunha?");
-
-          voteTimeout = setTimeout(() => {
-            showJudge("hum, sim, você mesma me disse que sabia quem era o suspeito.");
-
-            voteTimeout = setTimeout(() => {
-              showTemmie("Não me lembro, sou Temmie yaya.");
-
-              voteTimeout = setTimeout(() => {
-                showJudge("Como assim? você falou que um deles estava...");
-
-                voteTimeout = setTimeout(() => {
-                  showTemmie("Eu que não tô entendendo, achei que ganharia algum docinho se inventasse alguma coisa e viesse pra cá ficar atoa.");
-
-                  voteTimeout = setTimeout(() => {
-                    showJudge("É sério isso Temmie? HUum- enfim, deixa isso pra lá, vamos começar isso SEM INTERUPÇÕES.");
-
-                    voteTimeout = setTimeout(() => {
-                      showJudge(secondIntro);
-
-                      voteTimeout = setTimeout(() => {
-                        startCase();
-                      }, 10000);
-                    }, 10000);
-                  }, 10000);
-                }, 4500);
-              }, 4500);
-            }, 4500);
-          }, 4500);
-        }, 4500);
-      }, 4500);
-    }, 4500);
-  }, 4500);
+  startDialogueSequence([
+    { type: "message", role: "judge", message: firstIntro, focus: "judge" },
+    { type: "message", role: "judge", message: "Junto conosco, uma testemunha que disse que viu um de vocês agindo no crime.", focus: "judge" },
+    { type: "message", role: "judge", message: "Esta é Temmie.", focus: "judge" },
+    { type: "message", role: "temmie", message: "Hoiii :3", focus: "temmie" },
+    { type: "message", role: "temmie", message: "uma perguntinha, eu sou a testemunha?", focus: "temmie" },
+    { type: "message", role: "judge", message: "hum, sim, você mesma me disse que sabia quem era o suspeito.", focus: "judge" },
+    { type: "message", role: "temmie", message: "Não me lembro, sou Temmie yaya.", focus: "temmie" },
+    { type: "message", role: "judge", message: "Como assim? você falou que um deles estava...", focus: "judge" },
+    { type: "message", role: "temmie", message: "Eu que não tô entendendo, achei que ganharia algum docinho se inventasse alguma coisa e viesse pra cá ficar atoa.", focus: "temmie" },
+    { type: "message", role: "judge", message: "É sério isso Temmie? HUum- enfim, deixa isso pra lá, vamos começar isso SEM INTERUPÇÕES.", focus: "judge" },
+    { type: "message", role: "judge", message: secondIntro, focus: "judge" },
+    { type: "message", role: "judge", message: "Já que somos apenas animais, vamos descobrir o culpado dessa forma, não prescisamos se preocupar em pagar advogados e nem impostos...", focus: "judge" },
+  ], () => {
+    startCase();
+  });
 }
 
 function startCase() {
@@ -332,15 +398,12 @@ function startCase() {
   clearCharacterHighlight();
 
   const activeCase = cases[currentCase];
-  showJudge(activeCase.question);
-
-  voteTimeout = setTimeout(() => {
-    hideAllBubbles();
-    showgubby(activeCase.gubby);
-    showRigby(activeCase.rigby);
-    setActiveCharacter("both");
+  startDialogueSequence([
+    { type: "message", role: "judge", message: activeCase.question, focus: "judge" },
+  ], () => {
+    showCaseOptions(activeCase.gubby, activeCase.rigby);
     showVoting();
-  }, 3500);
+  });
 }
 
 function registerVote(guilty) {
@@ -360,10 +423,9 @@ function registerVote(guilty) {
     pontosRigby += 1;
   }
 
-  showJudge(activeCase.education[guilty]);
-  setActiveCharacter("judge");
-
-  voteTimeout = setTimeout(() => {
+  startDialogueSequence([
+    { type: "message", role: "judge", message: activeCase.education[guilty], focus: "judge" },
+  ], () => {
     if (currentCase === 1) {
       playSecondQuestionInterlude();
     } else if (currentCase === 2) {
@@ -378,76 +440,36 @@ function registerVote(guilty) {
         showFinalResult();
       }
     }
-  }, 3200);
+  });
 }
 
 function playFourthQuestionInterlude() {
-  showTemmie("Uma vez eu joguei uma bomba na escola..");
-
-  voteTimeout = setTimeout(() => {
-    showJudge("QUÊ");
-
-    voteTimeout = setTimeout(() => {
-      showRigby("QUÊ");
-
-      voteTimeout = setTimeout(() => {
-        showgubby("QUÊ");
-
-        voteTimeout = setTimeout(() => {
-          showTemmie("Brincadeirinha! eu só usei sim uma bomba, mas foi uma bomba de confete pra jogar no meu amiguinho, breeeh :P");
-
-          voteTimeout = setTimeout(() => {
-            showgubby("Meritíssimo, eu desconfio que essa suposta testemunha é a supeita desses crimes na internet, OLHA OS ABSURDOS QUE ELA ESTÁ DIZENDO-");
-
-            voteTimeout = setTimeout(() => {
-              showTemmie("AHA! parece que achamos o suspeito...o suspeito sempre acusa o outro de suspeito para não acharem que ele também é o suspeito, isso não é MUUUUITO estranho meritíssimo?");
-
-              voteTimeout = setTimeout(() => {
-                showJudge("E-eeeu...");
-
-                voteTimeout = setTimeout(() => {
-                  showTemmie("AHA! temos dois suspeitos nesta sala...o suspeito sempre gagueja com perguntas simples, parece que você é o suspeito meritíssimo.");
-
-                  voteTimeout = setTimeout(() => {
-                    showJudge("O-QUÊ? SE TÁ ME ZUANDO?");
-
-                    voteTimeout = setTimeout(() => {
-                      showTemmie("nunca...HAHAHAA.");
-
-                      voteTimeout = setTimeout(() => {
-                        showRigby("POR FAVOR MERITÍSSIMO, TERMINE DE FAZER AS PERGUNTAS, QUERO IR PRA CASA URGENTEMENTE");
-
-                        voteTimeout = setTimeout(() => {
-                          showTemmie("AHA! o suspeito sempre é o que quer ir embora mais cedo, quer se livrar da cadeia?");
-
-                          voteTimeout = setTimeout(() => {
-                            showRigby("huum-m n-não sei, v-você tá me assustando...");
-
-                            voteTimeout = setTimeout(() => {
-                              showTemmie("UH, bom saber, por favor meritíssimo, continue a fazer perguntas, mesmo nos já sabemos quem é o suspeito...");
-
-                              voteTimeout = setTimeout(() => {
-                                currentCase += 1;
-                                if (currentCase < cases.length) {
-                                  startCase();
-                                } else {
-                                  showFinalResult();
-                                }
-                              }, 1000);
-                            }, 1000);
-                          }, 1000);
-                        }, 1000);
-                      }, 1000);
-                    }, 1000);
-                  }, 1000);
-                }, 1000);
-              }, 1000);
-            }, 1000);
-          }, 1000);
-        }, 1000);
-      }, 1000);
-    }, 1000);
-  }, 1000);
+  startDialogueSequence([
+    { type: "message", role: "temmie", message: "Uma vez eu joguei uma bomba na escola...", focus: "temmie" },
+    { type: "message", role: "judge", message: "QUÊ", focus: "judge" },
+    { type: "message", role: "rigby", message: "QUÊ", focus: "rigby" },
+    { type: "message", role: "gubby", message: "QUÊ", focus: "gubby" },
+    { type: "message", role: "temmie", message: "Brincadeirinha! eu só usei sim uma bomba, mas foi uma bomba de confete pra jogar no meu amiguinho, breeeh :P", focus: "temmie" },
+    { type: "message", role: "gubby", message: "Meritíssimo, eu desconfio que essa suposta testemunha é a supeita desses crimes na internet, OLHA OS ABSURDOS QUE ELA ESTÁ DIZENDO-", focus: "gubby" },
+    { type: "message", role: "temmie", message:"EU NÃO COMETI NENHUM CRIME ONLINE, só cometi alguns crimes reais...", focus: "temmie"},
+    {type:  "message", role: "gubby", message: "ehhh, MESMO ASSIM! VOCÊ ESTÁ CONFESSANDO UM CRIME! JOGAR CONFETES NOS AMIGUINHOPS É ERRADO!", focus: "gubby"},
+    { type: "message", role: "temmie", message: "AHA! parece que achamos o suspeito...o suspeito sempre acusa o outro de suspeito para não acharem que ele também é o suspeito, isso não é MUUUUITO estranho meritíssimo?", focus: "temmie" },
+    { type: "message", role: "judge", message: "E-eeeu...", focus: "judge" },
+    { type: "message", role: "temmie", message: "AHA! temos dois suspeitos nesta sala...o suspeito sempre gagueja com perguntas simples, parece que você é o suspeito meritíssimo.", focus: "temmie" },
+    { type: "message", role: "judge", message: "O-QUÊ? SE TÁ ME ZUANDO?", focus: "judge" },
+    { type: "message", role: "temmie", message: "nunca...HAHAHAA.", focus: "temmie" },
+    { type: "message", role: "rigby", message: "POR FAVOR MERITÍSSIMO, TERMINE DE FAZER AS PERGUNTAS, QUERO IR PRA CASA URGENTEMENTE", focus: "rigby" },
+    { type: "message", role: "temmie", message: "AHA! o suspeito sempre é o que quer ir embora mais cedo, quer se livrar da cadeia?", focus: "temmie" },
+    { type: "message", role: "rigby", message: "huum-m n-não sei, v-você tá me assustando...", focus: "rigby" },
+    { type: "message", role: "temmie", message: "UH, bom saber, por favor meritíssimo, continue a fazer perguntas, mesmo nos já sabemos quem é o suspeito...", focus: "temmie" },
+  ], () => {
+    currentCase += 1;
+    if (currentCase < cases.length) {
+      startCase();
+    } else {
+      showFinalResult();
+    }
+  });
 }
 
 function showFinalResult() {
@@ -477,7 +499,13 @@ function showFinalResult() {
 
 votegubbyButton.addEventListener("click", () => registerVote("gubby"));
 voteRigbyButton.addEventListener("click", () => registerVote("rigby"));
+nextDialogueButton.addEventListener("click", () => {
+  if (dialogueActive) {
+    advanceDialogue();
+  }
+});
 
 window.addEventListener("load", () => {
-  startIntro();
+  showStartScreen();
+  scheduleStart(5000);
 });
