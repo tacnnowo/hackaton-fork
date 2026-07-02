@@ -22,7 +22,7 @@ const cases = [
     gubby: "Posto meu endereço e telefone para todo mundo ver.",
     rigby: "Eu não publico nada pessoal no meu perfil.",
     education: {
-      gubby: "RIGBY INOCENTE. compartilhar informações que podem ser usadas para não é maneiro.",
+      gubby: "RIGBY INOCENTE. compartilhar informações que podem ser usadas para afins assim não é maneiro.",
       rigby: "GUBBY INOCENTE. Eu fui cauteloso. Expor dados pessoais em público é perigoso.",
     },
   },
@@ -36,7 +36,7 @@ const cases = [
     },
   },
   {
-    question: "Eu mandei mensagens agressivas para um colega online. Isso está certo?",
+    question: "E-eu mandei mensagens agressivas para um colega online. Isso está certo?",
     gubby: "Eu xingo quando fico irritado e não quero saber como as pessoas se sentem.",
     rigby: "Não é legal. Eu tento ajudar e pedir respeito.",
     education: {
@@ -156,7 +156,7 @@ function setActiveCharacter(role) {
 }
 
 function updateProgress() {
-  progressText.innerText = `${currentCase + 1} de ${cases.length}`;
+  progressText.innerText = `Caso ${currentCase + 1} de ${cases.length}`;
 }
 
 function showJudge(message) {
@@ -432,6 +432,10 @@ function registerVote(guilty) {
       playThirdQuestionInterlude();
     } else if (currentCase === 3) {
       playFourthQuestionInterlude();
+    } else if (currentCase === 4) {
+      playFifthQuestionInterlude();
+    } else if (currentCase === cases.length - 1) {
+      playFinalQuestionInterlude();
     } else {
       currentCase += 1;
       if (currentCase < cases.length) {
@@ -439,6 +443,32 @@ function registerVote(guilty) {
       } else {
         showFinalResult();
       }
+    }
+  });
+}
+
+function playFifthQuestionInterlude() {
+  startDialogueSequence([
+    { type: "message", role: "temmie", message: "Não tem ProBLema xingar as vezes, só dá ruim quando a pessoa descobre que foi você...", focus: "temmie" },
+    { type: "message", role: "judge", message: "Temmie, ISSO ESTÁ COMPLETAMENTE ERRADO!!!!!!!!!!", focus: "judge" },
+    { type: "message", role: "temmie", message: "vocês concordam comigo pessoal?", focus: "temmie" },
+    { type: "message", role: "rigby", message: "prefiro não perder meu tempo respondendo perguntas desse tipo.", focus: "rigby" },
+    { type: "message", role: "gubby", message: "Não concordo Temmie.", focus: "gubby" },
+    { type: "message", role: "temmie", message: "A-", focus: "temmie" },
+    { type: "message", role: "temmie", message: "SE FOR ASSIM, EU VOU JOGAR FOGO AQUI!", focus: "temmie" },
+    { type: "message", role: "judge", message: "QUEEEEE PARE VOCÊ TERÁ QUE SER RETIRADA DAQUI!", focus: "judge" },
+    { type: "message", role: "rigby", message: "TIREM ESSA MALUCA SOCORRO!", focus: "rigby" },
+    { type: "message", role: "temmie", message: "CALMA PESSOAL! foi só mais uma brincadeirinha, hihihihi...", focus: "temmie" },
+    { type: "message", role: "judge", message: "mais uma gracinha, e você vai ser expulsa...", focus: "judge" },
+    { type: "message", role: "temmie", message: "parece que a coisa tá ficando mais séria...", focus: "temmie" },
+    { type: "message", role: "judge", message: "*cof* *cof*", focus: "judge" },
+    { type: "message", role: "judge", message: "continuando NORMALMENTE com as perguntas...", focus: "judge" },
+  ], () => {
+    currentCase += 1;
+    if (currentCase < cases.length) {
+      startCase();
+    } else {
+      showFinalResult();
     }
   });
 }
@@ -452,7 +482,7 @@ function playFourthQuestionInterlude() {
     { type: "message", role: "temmie", message: "Brincadeirinha! eu só usei sim uma bomba, mas foi uma bomba de confete pra jogar no meu amiguinho, breeeh :P", focus: "temmie" },
     { type: "message", role: "gubby", message: "Meritíssimo, eu desconfio que essa suposta testemunha é a supeita desses crimes na internet, OLHA OS ABSURDOS QUE ELA ESTÁ DIZENDO-", focus: "gubby" },
     { type: "message", role: "temmie", message:"EU NÃO COMETI NENHUM CRIME ONLINE, só cometi alguns crimes reais...", focus: "temmie"},
-    {type:  "message", role: "gubby", message: "ehhh, MESMO ASSIM! VOCÊ ESTÁ CONFESSANDO UM CRIME! JOGAR CONFETES NOS AMIGUINHOPS É ERRADO!", focus: "gubby"},
+    {type:  "message", role: "gubby", message: "ehhh, MESMO ASSIM! VOCÊ ESTÁ CONFESSANDO UM CRIME! JOGAR CONFETES NOS AMIGUINHOS É ERRADO!", focus: "gubby"},
     { type: "message", role: "temmie", message: "AHA! parece que achamos o suspeito...o suspeito sempre acusa o outro de suspeito para não acharem que ele também é o suspeito, isso não é MUUUUITO estranho meritíssimo?", focus: "temmie" },
     { type: "message", role: "judge", message: "E-eeeu...", focus: "judge" },
     { type: "message", role: "temmie", message: "AHA! temos dois suspeitos nesta sala...o suspeito sempre gagueja com perguntas simples, parece que você é o suspeito meritíssimo.", focus: "temmie" },
@@ -472,21 +502,27 @@ function playFourthQuestionInterlude() {
   });
 }
 
+function playFinalQuestionInterlude() {
+  startDialogueSequence([
+    { type: "message", role: "judge", message: "É pessoal, parece que o culpado é...", focus: "judge" },
+    { type: "message", role: "temmie", message: "Um momentinho meritíssimo!", focus: "temmie" },
+    { type: "message", role: "temmie", message: "Antes desse tribunal chato começar, quero dizer, terminar, TUDO VAI EXPLODIR EM 3...", focus: "temmie" },
+    { type: "message", role: "rigby", message: "QUE? NÃO!", focus: "rigby" },
+    { type: "message", role: "temmie", message: "2...", focus: "temmie" },
+    { type: "message", role: "gubby", message: "NÃOOOO", focus: "gubby" },
+    { type: "message", role: "temmie", message: "1... :P", focus: "temmie" },
+  ], () => {
+    showFinalResult();
+  });
+}
+
 function showFinalResult() {
   hideAllBubbles();
   clearCharacterHighlight();
   hideVoting();
   resultPanel.classList.remove("visible");
 
-  let finalMessage = "";
-
-  if (pontosgubby > pontosRigby) {
-    finalMessage =
-      "Após analisar todas as evidências, gubby foi considerado culpado por colocar a segurança digital em risco.";
-  } else {
-    finalMessage =
-      "Após analisar todas as evidências, Rigby foi considerado culpado por colocar a segurança digital em risco.";
-  }
+  const finalMessage = "O tribunal foi apagado, ninguém sabe ao certo quem era o suspeito...";
 
   finalScene.innerHTML = `<h1>Fim da cena</h1><p>${finalMessage}</p>`;
   screenOverlay.classList.add("active");
